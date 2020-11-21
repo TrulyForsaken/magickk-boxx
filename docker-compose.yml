@@ -1,0 +1,870 @@
+version: "3.4"
+services:
+  bazarr:
+    image: ghcr.io/linuxserver/bazarr
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${BAZARR_PORT_6767}:6767
+    container_name: bazarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/bazarr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${MEDIADIR_MOVIES}:/movies
+      - ${MEDIADIR_TV}:/tv
+  beets:
+    image: ghcr.io/linuxserver/beets
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${BEETS_PORT_8337}:8337
+    container_name: beets
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/beets:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_MUSIC}:/music
+  bookstack:
+    image: ghcr.io/linuxserver/bookstack
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${BOOKSTACK_PORT_80}:80
+    container_name: bookstack
+    environment:
+      - APP_URL=${BOOKSTACK_APP_URL}
+      - DB_DATABASE=${BOOKSTACK_DB_DATABASE}
+      - DB_HOST=${BOOKSTACK_DB_HOST}
+      - DB_PASS=${BOOKSTACK_DB_PASS}
+      - DB_USER=${BOOKSTACK_DB_USER}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/bookstack:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  calibreweb:
+    image: ghcr.io/linuxserver/calibre-web
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${CALIBREWEB_PORT_8083}:8083
+    container_name: calibreweb
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/calibreweb:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${MEDIADIR_BOOKS}:/books
+  cloudflareddns:
+    image: ghcr.io/hotio/cloudflare-ddns
+    hostname: ${DOCKERHOSTNAME}
+    container_name: cloudflareddns
+    environment:
+      - ARGS=${CLOUDFLAREDDNS_ARGS}
+      - CF_APITOKEN=${CLOUDFLAREDDNS_APITOKEN}
+      - CF_APIKEY=${CLOUDFLAREDDNS_APIKEY}
+      - CF_HOSTS=${CLOUDFLAREDDNS_HOSTS}
+      - CF_RECORDTYPES=${CLOUDFLAREDDNS_RECORDTYPES}
+      - CF_USER=${CLOUDFLAREDDNS_USER}
+      - CF_ZONES=${CLOUDFLAREDDNS_ZONES}
+      - DETECTION_MODE=${CLOUDFLAREDDNS_DETECTION_MODE}
+      - INTERVAL=${CLOUDFLAREDDNS_INTERVAL}
+      - LOG_LEVEL=${CLOUDFLAREDDNS_LOG_LEVEL}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  ddclient:
+    image: ghcr.io/linuxserver/ddclient
+    hostname: ${DOCKERHOSTNAME}
+    container_name: ddclient
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/ddclient:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  deemix:
+    image: registry.gitlab.com/bockiii/deemix-docker
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${DEEMIX_PORT_6595}:6595
+    container_name: deemix
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/deemix:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/downloads
+  dozzle:
+    image: amir20/dozzle
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${DOZZLE_PORT_8080}:8080
+    container_name: dozzle
+    environment:
+      - DOZZLE_BASE=${DOZZLE_BASE}
+      - DOZZLE_FILTER=${DOZZLE_FILTER}
+      - DOZZLE_LEVEL=${DOZZLE_LEVEL}
+      - DOZZLE_TAILSIZE=${DOZZLE_TAILSIZE}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  duplicati:
+    image: ghcr.io/linuxserver/duplicati
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${DUPLICATI_PORT_8200}:8200
+    container_name: duplicati
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/duplicati:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DUPLICATI_BACKUPSDIR}:/backups
+      - ${DUPLICATI_SOURCEDIR}:/source
+  emby:
+    image: ghcr.io/linuxserver/emby
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${EMBY_PORT_8096}:8096
+      - ${EMBY_PORT_8920}:8920
+    container_name: emby
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/emby:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${EMBY_TRANSCODEDIR}:/transcode
+      - ${MEDIADIR_MOVIES}:/data/movies
+      - ${MEDIADIR_MOVIES}:/movies
+      - ${MEDIADIR_MUSIC}:/data/music
+      - ${MEDIADIR_MUSIC}:/music
+      - ${MEDIADIR_TV}:/data/tvshow
+      - ${MEDIADIR_TV}:/tv
+  grafana:
+    image: grafana/grafana
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${GRAFANA_PORT_3000}:3000
+    container_name: grafana
+    environment:
+      - GF_INSTALL_PLUGINS=${GRAFANA_GF_INSTALL_PLUGINS}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    user: ${PUID}:${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/grafana:/var/lib/grafana
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${HEIMDALL_PORT_443}:443
+      - ${HEIMDALL_PORT_80}:80
+    container_name: heimdall
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/heimdall:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  htpcmanager:
+    image: ghcr.io/linuxserver/htpcmanager
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${HTPCMANAGER_PORT_8085}:8085
+    container_name: htpcmanager
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/htpcmanager:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  influxdb:
+    image: influxdb
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${INFLUXDB_PORT_8086}:8086
+    container_name: influxdb
+    environment:
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/influxdb:/var/lib/influxdb
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  jackett:
+    image: ghcr.io/linuxserver/jackett
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${JACKETT_PORT_9117}:9117
+    container_name: jackett
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/jackett:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+  lazylibrarian:
+    image: ghcr.io/linuxserver/lazylibrarian
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${LAZYLIBRARIAN_PORT_5299}:5299
+    container_name: lazylibrarian
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/lazylibrarian:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_AUDIOBOOKS}:/audiobooks
+      - ${MEDIADIR_BOOKS}:/books
+  lidarr:
+    image: ghcr.io/linuxserver/lidarr
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${LIDARR_PORT_8686}:8686
+    container_name: lidarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/lidarr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_MUSIC}:/music
+  mariadb:
+    image: ghcr.io/linuxserver/mariadb
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${MARIADB_PORT_3306}:3306
+    container_name: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MARIADB_MYSQL_ROOT_PASSWORD}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/mariadb:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  medusa:
+    image: ghcr.io/linuxserver/medusa
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${MEDUSA_PORT_8081}:8081
+    container_name: medusa
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/medusa:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_TV}:/tv
+  muximux:
+    image: ghcr.io/linuxserver/muximux
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${MUXIMUX_PORT_80}:80
+    container_name: muximux
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/muximux:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  ombi:
+    image: ghcr.io/linuxserver/ombi
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${OMBI_PORT_3579}:3579
+    container_name: ombi
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/ombi:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  organizr:
+    image: ghcr.io/organizr/organizr
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${ORGANIZR_PORT_80}:80
+    container_name: organizr
+    environment:
+      - branch=${ORGANIZR_BRANCH}
+      - fpm=${ORGANIZR_FPM}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/organizr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  portaineragent:
+    image: portainer/agent
+    hostname: portaineragent
+    ports:
+      - ${PORTAINERAGENT_PORT_9001}:9001
+    container_name: portaineragent
+    environment:
+      - CAP_HOST_MANAGEMENT=1
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /:/host
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  portainer:
+    image: portainer/portainer-ce
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${PORTAINER_PORT_9000}:9000
+    command: -H unix:///var/run/docker.sock
+    container_name: portainer
+    environment:
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKERCONFDIR}/portainer:/data
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  pyload:
+    image: ghcr.io/linuxserver/pyload
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${PYLOAD_PORT_7227}:7227
+      - ${PYLOAD_PORT_8000}:8000
+    container_name: pyload
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/pyload:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/downloads
+  radarr:
+    image: ghcr.io/linuxserver/radarr
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${RADARR_PORT_7878}:7878
+    container_name: radarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/radarr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_MOVIES}:/movies
+  resiliosync:
+    image: ghcr.io/linuxserver/resilio-sync
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${RESILIOSYNC_PORT_8888}:8888
+      - ${RESILIOSYNC_PORT_55555}:55555
+    container_name: resiliosync
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/resiliosync:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/downloads
+      - ${RESILIOSYNC_SYNCDIR}:/sync
+  rsnapshot:
+    image: ghcr.io/linuxserver/rsnapshot
+    hostname: ${DOCKERHOSTNAME}
+    container_name: rsnapshot
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/rsnapshot:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${RSNAPSHOT_DATADIR}:/data
+      - ${RSNAPSHOT_ROOT_SSH}:/root/.ssh:ro
+      - ${RSNAPSHOT_SNAPSHOTSDIR}:/.snapshots
+  samba:
+    image: dperson/samba:aarch64
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${SAMBA_PORT_137}:137/udp
+      - ${SAMBA_PORT_138}:138/udp
+      - ${SAMBA_PORT_139}:139
+      - ${SAMBA_PORT_445}:445
+    container_name: samba
+    environment:
+      - GROUPID=${PGID}
+      - NMBD=${SAMBA_NMBD}
+      - SHARE=${SAMBA_SHARENAME};/${SAMBA_SHARENAME};yes;no;no;all;${SAMBA_USERNAME}
+      - TZ=${TZ}
+      - USER=${SAMBA_USERNAME};${SAMBA_PASSWORD}
+      - USERID=${PUID}
+      - WORKGROUP=${SAMBA_WORKGROUP}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}:/${SAMBA_SHARENAME}/config
+      - ${DOCKERSTORAGEDIR}:/${SAMBA_SHARENAME}/storage
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/${SAMBA_SHARENAME}/downloads
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_BOOKS}:/${SAMBA_SHARENAME}/books
+      - ${MEDIADIR_BOOKS}:/books
+      - ${MEDIADIR_COMICS}:/${SAMBA_SHARENAME}/comics
+      - ${MEDIADIR_COMICS}:/comics
+      - ${MEDIADIR_MOVIES}:/${SAMBA_SHARENAME}/movies
+      - ${MEDIADIR_MOVIES}:/movies
+      - ${MEDIADIR_MUSIC}:/${SAMBA_SHARENAME}/music
+      - ${MEDIADIR_MUSIC}:/music
+      - ${MEDIADIR_TV}:/${SAMBA_SHARENAME}/tv
+      - ${MEDIADIR_TV}:/tv
+  smokeping:
+    image: ghcr.io/linuxserver/smokeping
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${SMOKEPING_PORT_80}:80
+    container_name: smokeping
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/smokeping:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${SMOKEPING_DATADIR}:/data
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${SONARR_PORT_8989}:8989
+    container_name: sonarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/sonarr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/data
+      - ${DOWNLOADSDIR}:/downloads
+      - ${MEDIADIR_TV}:/tv
+  swag:
+    image: ghcr.io/linuxserver/swag
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${SWAG_PORT_443}:443
+      - ${SWAG_PORT_80}:80
+    cap_add:
+      - NET_ADMIN
+    container_name: swag
+    environment:
+      - DNSPLUGIN=${SWAG_DNSPLUGIN}
+      - DUCKDNSTOKEN=${SWAG_DUCKDNSTOKEN}
+      - EMAIL=${SWAG_EMAIL}
+      - EXTRA_DOMAINS=${SWAG_EXTRA_DOMAINS}
+      - ONLY_SUBDOMAINS=${SWAG_ONLY_SUBDOMAINS}
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - SUBDOMAINS=${SWAG_SUBDOMAINS}
+      - TZ=${TZ}
+      - URL=${SWAG_URL}
+      - VALIDATION=${SWAG_VALIDATION}
+      - MAXMINDDB_LICENSE_KEY=${SWAG_MAXMINDDB_LICENSE_KEY}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/swag:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  telegraf:
+    image: telegraf
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${TELEGRAF_PORT_8092}:8092/udp
+      - ${TELEGRAF_PORT_8094}:8094
+      - ${TELEGRAF_PORT_8125}:8125
+    container_name: telegraf
+    environment:
+      - HOST_ETC=/host/etc
+      - HOST_MOUNT_PREFIX=/host
+      - HOST_PROC=/host/proc
+      - HOST_SYS=/host/sys
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro
+      - /etc:/host/etc:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/utmp:/var/run/utmp:ro
+      - ${DOCKERCONFDIR}/telegraf:/var/lib/telegraf
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  traktarr:
+    image: eafxx/traktarr
+    hostname: ${DOCKERHOSTNAME}
+    container_name: traktarr
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/traktarr:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+  transmission:
+    image: ghcr.io/linuxserver/transmission
+    hostname: ${DOCKERHOSTNAME}
+    ports:
+      - ${TRANSMISSION_PORT_51413}:51413
+      - ${TRANSMISSION_PORT_51413}:51413/udp
+      - ${TRANSMISSION_PORT_6881}:6881
+      - ${TRANSMISSION_PORT_6881}:6881/udp
+      - ${TRANSMISSION_PORT_9091}:9091
+    container_name: transmission
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKERCONFDIR}/transmission:/config
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
+      - ${DOWNLOADSDIR}:/downloads
+      - ${DOWNLOADSDIR}/watch:/watch
+  watchtower:
+    image: containrrr/watchtower:arm64v8-latest
+    hostname: ${DOCKERHOSTNAME}
+    container_name: watchtower
+    environment:
+      - REPO_PASS=${WATCHTOWER_REPO_PASS}
+      - REPO_USER=${WATCHTOWER_REPO_USER}
+      - TZ=${TZ}
+      - WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}
+      - WATCHTOWER_INCLUDE_STOPPED=${WATCHTOWER_INCLUDE_STOPPED}
+      - WATCHTOWER_MONITOR_ONLY=${WATCHTOWER_MONITOR_ONLY}
+      - WATCHTOWER_NOTIFICATION_TEMPLATE=${WATCHTOWER_NOTIFICATION_TEMPLATE}
+      - WATCHTOWER_NOTIFICATION_URL=${WATCHTOWER_NOTIFICATION_URL}
+      - WATCHTOWER_NOTIFICATIONS_LEVEL=${WATCHTOWER_NOTIFICATIONS_LEVEL}
+      - WATCHTOWER_NOTIFICATIONS=${WATCHTOWER_NOTIFICATIONS}
+      - WATCHTOWER_SCHEDULE=${WATCHTOWER_SCHEDULE}
+      - WATCHTOWER_TIMEOUT=${WATCHTOWER_TIMEOUT}
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKERSHAREDDIR}:/shared
+      - ${DOCKERSTORAGEDIR}:/storage
